@@ -1,0 +1,2 @@
+# Mimigma
+Mimigma Sammlung App
