@@ -1,0 +1,1669 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mimigma-Sammlung</title>
+<meta name="description" content="Checkliste aller Mimigma-Sammelkarten mit Binder-Übersicht, Fotos, Zustand und Wert.">
+<meta name="theme-color" content="#ECEAF2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14111B" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Gochi+Hand&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+:root {
+  /* Layout: one-column phone app. Header with tally, collection value and binder mini-map, sticky filter bar, binder-divider year tabs (sticky), cards with variants nested, a details sheet per card (photo, grading, value). */
+  --bg: #ECEAF2;
+  --surface: #F9F8FC;
+  --sunk: #F1EFF6;
+  --ink: #211C2C;
+  --muted: #646073;
+  --line: #D6D2E0;
+  --gold: #DFAA2E;
+  --gold-soft: #F8ECCB;
+  --gold-ink: #241B05;
+  --rose: #AE385B;
+  --rose-soft: #F5E0E7;
+  --good: #2B8152;
+  --warn: #AD4C25;
+  --scrim: rgba(20, 17, 27, 0.72);
+  --fh: 64px;
+  --f-display: "Gochi Hand", "Chalkboard SE", "Comic Sans MS", cursive;
+  --f-body: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14111B; --surface: #1E1A27; --sunk: #191622; --ink: #EDE9F5; --muted: #A39CB2; --line: #332D40;
+    --gold: #E7BA45; --gold-soft: #2E2715; --gold-ink: #1C1505; --rose: #E87D9A; --rose-soft: #3B202B;
+    --good: #5BC78A; --warn: #EE8F68; --scrim: rgba(6, 5, 10, 0.8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14111B; --surface: #1E1A27; --sunk: #191622; --ink: #EDE9F5; --muted: #A39CB2; --line: #332D40;
+  --gold: #E7BA45; --gold-soft: #2E2715; --gold-ink: #1C1505; --rose: #E87D9A; --rose-soft: #3B202B;
+  --good: #5BC78A; --warn: #EE8F68; --scrim: rgba(6, 5, 10, 0.8);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+.app {
+  max-width: 560px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 22px 96px;
+}
+
+/* Header */
+.eyebrow, .label {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+h1 {
+  margin: 4px 0 0;
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(40px, 11vw, 54px);
+  line-height: 1;
+  text-wrap: balance;
+}
+.scribble { display: block; width: 172px; max-width: 60%; height: 12px; margin-top: 4px; }
+.scribble path { fill: none; stroke: var(--gold); stroke-width: 3; stroke-linecap: round; }
+
+.tally { display: flex; align-items: baseline; gap: 8px; margin-top: 20px; }
+.tally-n { font-family: var(--f-display); font-size: 50px; line-height: 0.9; font-variant-numeric: tabular-nums; }
+.tally-of { color: var(--muted); font-size: 16px; }
+.tally-pct { margin-left: auto; font-family: var(--f-mono); font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.bar { height: 10px; margin-top: 8px; border-radius: 5px; background: var(--line); overflow: hidden; }
+.bar span { display: block; height: 100%; width: 0; background: var(--gold); border-radius: 5px; transition: width 0.35s ease; }
+.scope { margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+
+.worth {
+  display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 2px 12px;
+  margin-top: 14px; padding: 10px 14px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+}
+.worth-n { font-family: var(--f-display); font-size: 30px; line-height: 1; font-variant-numeric: tabular-nums; }
+.worth-note { flex-basis: 100%; margin: 0; font-size: 12.5px; color: var(--muted); }
+
+.sync {
+  display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px;
+  margin-top: 8px; min-height: 24px;
+  font-size: 13px; color: var(--muted);
+}
+.sync .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex: none; }
+#sync-text { flex: 1 1 14em; min-width: 0; }
+.sync[data-state="saved"] .dot { background: var(--good); }
+.sync[data-state="saving"] .dot { background: var(--gold); }
+.sync[data-state="error"] { color: var(--warn); }
+.sync[data-state="error"] .dot { background: var(--warn); }
+.retry, .textbtn {
+  appearance: none; border: 1px solid currentColor; background: transparent; color: inherit;
+  font: 600 12.5px/1 var(--f-body); padding: 6px 10px; border-radius: 6px; cursor: pointer;
+}
+
+/* Binder mini-map */
+.binder-box { margin-top: 22px; }
+.binder-head { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 4px 12px; }
+.binder-head p { margin: 0; font-size: 12px; color: var(--muted); }
+.binder { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+.page { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.pocket {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 3px;
+  padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px;
+}
+.slot {
+  appearance: none; display: block; width: 100%; max-width: 100%; aspect-ratio: 5 / 7;
+  padding: 0; margin: 0; border: 1px dashed var(--muted); border-radius: 2px;
+  background-color: transparent; background-size: cover; background-position: center;
+  cursor: pointer;
+}
+.slot.has { background-color: var(--gold); border: 1px solid var(--gold); }
+.slot.pic { background-color: var(--sunk); border: 1px dashed var(--muted); opacity: 0.55; }
+.slot.has.pic { border: 1px solid var(--gold); opacity: 1; }
+.slot.free { border: 1px solid var(--line); background-color: var(--bg); cursor: default; }
+.page-label { font-family: var(--f-mono); font-size: 10.5px; color: var(--muted); text-align: center; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 10px 0 0; font-size: 12px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.sw { display: inline-block; flex: none; width: 9px; height: 13px; border-radius: 2px; border: 1px dashed var(--muted); }
+.sw.has { background: var(--gold); border: 1px solid var(--gold); }
+.sw.pic { border: 1px solid var(--gold); background: linear-gradient(135deg, var(--rose-soft) 0%, var(--gold-soft) 100%); }
+
+/* Filter bar */
+.filters {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6;
+  margin-top: 20px; padding-block: 10px;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+}
+.seg {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px;
+  padding: 4px; background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+}
+.seg button {
+  appearance: none; border: 0; background: transparent; color: var(--muted);
+  display: flex; align-items: baseline; justify-content: center; gap: 6px;
+  padding: 10px 6px; border-radius: 7px; cursor: pointer;
+  font: 600 14px/1 var(--f-body);
+}
+.seg .c { font-family: var(--f-mono); font-size: 12px; font-variant-numeric: tabular-nums; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+.tools { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px 16px; margin-top: 14px; }
+.switch { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
+.switch input { width: 18px; height: 18px; margin: 0; accent-color: var(--ink); }
+.hint { margin: 0; font-size: 12.5px; color: var(--muted); }
+
+/* Year sections as binder dividers */
+#list { display: flex; flex-direction: column; gap: 26px; margin-top: 18px; }
+.year { display: flex; flex-direction: column; }
+.year-head {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--fh)); z-index: 4;
+  display: flex; align-items: flex-end; gap: 12px;
+  padding-top: 8px; background: var(--bg);
+}
+.year-tab {
+  margin: 0; flex: none;
+  padding: 7px 16px 3px;
+  border-radius: 12px 12px 0 0;
+  background: var(--ink); color: var(--bg);
+  font-family: var(--f-display); font-weight: 400; font-size: 30px; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.year.done .year-tab { background: var(--gold); color: var(--gold-ink); }
+.year-meta { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px; padding-bottom: 8px; }
+.year-count { font-family: var(--f-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+.year-bar { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; }
+.year-bar span { display: block; height: 100%; width: 0; background: var(--gold); transition: width 0.35s ease; }
+.rows {
+  list-style: none; margin: 0; padding: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 0 12px 12px 12px; overflow: hidden;
+}
+.row { display: flex; align-items: stretch; }
+.row:not([hidden]) ~ .row:not([hidden]) { border-top: 1px solid var(--line); }
+.row.var { background: var(--sunk); }
+.row.has { background: var(--gold-soft); }
+.toggle {
+  appearance: none; flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 4px 12px 12px; border: 0; background: transparent;
+  color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.row.var .toggle { padding-left: 44px; padding-block: 10px; gap: 10px; }
+.sleeve {
+  flex: none; width: 26px; height: 36px; border-radius: 4px;
+  border: 1.5px dashed var(--muted);
+  display: grid; place-items: center;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.row.var .sleeve { width: 20px; height: 28px; border-radius: 3px; }
+.sleeve svg { width: 16px; height: 16px; opacity: 0; transition: opacity 0.15s ease; }
+.row.var .sleeve svg { width: 13px; height: 13px; }
+.sleeve path { fill: none; stroke: var(--gold-ink); stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.row.has .sleeve { background: var(--gold); border: 1.5px solid var(--gold); }
+.row.has .sleeve svg { opacity: 1; }
+.toggle:hover .sleeve { border-color: var(--ink); }
+.row.has .toggle:hover .sleeve { border-color: var(--gold); }
+.txt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.name { font-weight: 600; font-size: 15.5px; line-height: 1.25; }
+.vname { font-weight: 600; font-size: 14px; line-height: 1.3; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 8px; }
+.setname { font-size: 13px; color: var(--ink); }
+.num { font-family: var(--f-mono); font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip {
+  font-size: 11.5px; font-weight: 600; line-height: 1; white-space: nowrap;
+  padding: 4px 7px; border-radius: 5px; border: 1px solid var(--line); color: var(--muted);
+}
+.chip.t-holo { color: var(--ink); background: var(--gold-soft); border-color: var(--gold); }
+.row.has .chip.t-holo { background: var(--surface); }
+.chip.t-special { color: var(--rose); background: var(--rose-soft); border-color: transparent; }
+.chip.t-promo { border-style: dashed; }
+.chip.t-only { color: var(--surface); background: var(--rose); border-color: var(--rose); }
+.chip.t-kind { color: var(--ink); border-color: var(--muted); }
+.chip.t-grade { color: var(--bg); background: var(--ink); border-color: var(--ink); font-family: var(--f-mono); font-weight: 500; }
+.chip.t-cond { color: var(--ink); border-color: var(--ink); font-family: var(--f-mono); font-weight: 500; }
+.price { font-family: var(--f-mono); font-size: 12.5px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.info { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 8px; }
+.info:empty { display: none; }
+.sub { font-size: 12.5px; color: var(--muted); line-height: 1.35; }
+
+.thumbbtn {
+  appearance: none; flex: none;
+  padding: 0; margin: 0; border: 0; background: transparent; cursor: zoom-in;
+  border-radius: 6px;
+}
+.thumb {
+  display: block; width: 30px; height: 42px; max-width: 100%;
+  object-fit: cover; border-radius: 4px; border: 1px solid var(--gold); background: var(--sunk);
+}
+.peek {
+  flex: none; display: flex; align-items: center; gap: 4px;
+  padding: 0 6px 0 8px; color: var(--muted);
+  font-size: 13px; font-weight: 600; text-decoration: none;
+}
+.peek svg { width: 11px; height: 11px; }
+.peek path, .more path { fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.peek:hover { color: var(--ink); text-decoration: underline; }
+.more {
+  appearance: none; flex: none; width: 44px; padding: 0;
+  display: grid; place-items: center;
+  border: 0; background: transparent; color: var(--muted); cursor: pointer;
+}
+.more svg { width: 18px; height: 18px; }
+.more circle { fill: currentColor; }
+.more:hover { color: var(--ink); }
+.toggle:focus-visible, .peek:focus-visible, .more:focus-visible, .thumbbtn:focus-visible,
+.seg button:focus-visible, .retry:focus-visible, .textbtn:focus-visible, .switch input:focus-visible,
+.restore:focus-visible, .undo:focus-visible, .sheet button:focus-visible, .sheet a:focus-visible,
+.sheet select:focus-visible, .sheet input:focus-visible {
+  outline: 2px solid var(--ink); outline-offset: -2px;
+}
+.slot:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+.app.ro .toggle { cursor: default; }
+.app.ro .toggle:hover .sleeve { border-color: var(--muted); }
+.row.flash { animation: flash 1.4s ease-out; }
+@keyframes flash {
+  0% { box-shadow: inset 0 0 0 2px var(--rose); }
+  100% { box-shadow: inset 0 0 0 2px transparent; }
+}
+.row.busy { opacity: 0.6; }
+
+.empty {
+  margin: 24px 0 0; padding: 18px;
+  border: 1px dashed var(--line); border-radius: 12px;
+  color: var(--muted); text-align: center;
+}
+
+/* Removed cards */
+.removed { margin-top: 28px; display: flex; flex-direction: column; gap: 8px; }
+.removed ul { list-style: none; margin: 0; padding: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.removed li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; }
+.removed li + li { border-top: 1px solid var(--line); }
+.removed .rtxt { flex: 1; min-width: 0; font-size: 14px; }
+.restore {
+  appearance: none; flex: none; border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+  font: 600 12.5px/1 var(--f-body); padding: 7px 10px; border-radius: 6px; cursor: pointer;
+}
+
+.foot {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-top: 36px; padding-top: 14px; border-top: 1px solid var(--line);
+  font-size: 12.5px; color: var(--muted);
+}
+.foot p { margin: 0; max-width: 65ch; }
+.foot a { color: inherit; }
+
+/* Toast */
+.toast {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 30;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  pointer-events: none;
+}
+.toast-in {
+  max-width: 528px; margin: 0 auto; pointer-events: auto;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 12px 12px 16px; border-radius: 12px;
+  background: var(--ink); color: var(--bg); font-size: 14px;
+}
+.toast-in span { flex: 1; min-width: 0; }
+.undo {
+  appearance: none; border: 0; background: var(--gold); color: var(--gold-ink);
+  font: 700 13.5px/1 var(--f-body); padding: 9px 12px; border-radius: 8px; cursor: pointer;
+}
+
+/* Details sheet */
+.sheet {
+  position: fixed; inset: 0; z-index: 20;
+  display: flex; align-items: flex-end; justify-content: center;
+  padding-top: calc(12px + env(safe-area-inset-top, 0px));
+  background: var(--scrim);
+}
+.sheet-in {
+  width: 100%; max-width: 560px; max-height: 100%; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 16px;
+  padding-top: 18px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  background: var(--surface); border-radius: 16px 16px 0 0;
+}
+@media (min-width: 600px) {
+  .sheet { align-items: center; padding: 24px; }
+  .sheet-in { max-width: 460px; border-radius: 16px; padding: 20px; }
+}
+.sh-head { display: flex; align-items: flex-start; gap: 12px; }
+.sh-head div { flex: 1; min-width: 0; }
+.sh-title { margin: 0; font-size: 18px; font-weight: 700; line-height: 1.25; }
+.sh-sub { margin: 3px 0 0; font-size: 13px; color: var(--muted); }
+.sh-x {
+  appearance: none; flex: none; width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+  font: 600 18px/1 var(--f-body); cursor: pointer;
+}
+.sh-photo { display: flex; gap: 14px; align-items: flex-start; }
+.sh-img {
+  flex: none; width: 108px; aspect-ratio: 5 / 7; max-width: 100%;
+  object-fit: cover; border-radius: 6px; border: 1px solid var(--line); background: var(--sunk);
+}
+.sh-noimg {
+  flex: none; width: 108px; aspect-ratio: 5 / 7; max-width: 100%;
+  display: grid; place-items: center; padding: 8px; text-align: center;
+  border: 1.5px dashed var(--muted); border-radius: 6px; color: var(--muted); font-size: 12px;
+}
+.sh-photo-actions { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field label, .field .flabel { font-size: 13px; font-weight: 600; }
+.sheet select, .sheet input[type="text"] {
+  width: 100%; min-height: 44px; padding: 8px 10px;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink);
+  font: 400 16px/1.2 var(--f-body);
+}
+.sheet input[type="text"] { font-family: var(--f-mono); }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.ferr { margin: 0; font-size: 12.5px; color: var(--warn); }
+.sh-note { margin: 0; font-size: 12.5px; color: var(--muted); }
+.sh-note.err { color: var(--warn); }
+.sheet .switch { align-self: flex-start; padding: 4px 0; }
+.sh-link { font-size: 13px; color: var(--ink); }
+.sh-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.sheet .btn {
+  appearance: none; border: 1px solid var(--line); background: var(--bg); color: var(--ink);
+  font: 600 14px/1 var(--f-body); padding: 11px 14px; border-radius: 8px; cursor: pointer;
+}
+.sheet .btn.primary { margin-left: auto; background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.sheet .btn.danger { color: var(--warn); }
+.sheet .btn:disabled { opacity: 0.5; cursor: default; }
+.sh-big { display: block; width: 100%; max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; background: var(--sunk); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  .row.flash { box-shadow: inset 0 0 0 2px var(--rose); }
+}
+.backup { margin-top: 28px; display: flex; flex-direction: column; gap: 8px; }
+.backup .hint { max-width: 60ch; }
+.bk-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.bk-actions .restore { padding: 10px 12px; font-size: 13.5px; }
+.bk-actions .restore.armed { border-color: var(--warn); color: var(--warn); }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+  <header>
+    <p class="eyebrow">Sammelkarten-Checkliste</p>
+    <h1>Mimigma-Sammlung</h1>
+    <svg class="scribble" viewBox="0 0 200 12" aria-hidden="true"><path d="M3 8 C 18 2, 30 11, 46 6 S 76 2, 94 7 S 126 11, 146 5 S 180 3, 197 7"/></svg>
+    <div class="tally">
+      <span class="tally-n" id="tally-n">0</span>
+      <span class="tally-of">von <span id="tally-total">52</span> Karten</span>
+      <span class="tally-pct" id="tally-pct">0 %</span>
+    </div>
+    <div class="bar" id="bar" role="progressbar" aria-label="Fortschritt" aria-valuemin="0" aria-valuemax="52" aria-valuenow="0"><span id="bar-fill"></span></div>
+    <p class="scope" id="scope">31 Motive und 21 Varianten</p>
+    <div class="worth">
+      <span class="label">Wert deiner Sammlung</span>
+      <span class="worth-n" id="worth-n">0,00 €</span>
+      <p class="worth-note" id="worth-note">Tippe bei einer Karte auf ⋯ und trag ihren Wert ein.</p>
+    </div>
+    <p class="sync" id="sync" data-state="loading" aria-live="polite">
+      <span class="dot" aria-hidden="true"></span>
+      <span id="sync-text">Lade deine Sammlung …</span>
+    </p>
+  </header>
+
+  <section class="binder-box" aria-labelledby="binder-h">
+    <div class="binder-head">
+      <h2 class="label" id="binder-h">Binder-Übersicht</h2>
+      <p id="binder-note">6 Seiten à 9 Fächer · Fach antippen</p>
+    </div>
+    <div class="binder" id="binder"></div>
+    <p class="legend"><span><i class="sw has" aria-hidden="true"></i>Hast du</span><span><i class="sw" aria-hidden="true"></i>Fehlt</span><span><i class="sw pic" aria-hidden="true"></i>Dein Foto, sobald du eins hochlädst</span></p>
+  </section>
+
+  <nav class="filters" id="filters" aria-label="Filter">
+    <div class="seg" role="group" aria-label="Karten anzeigen">
+      <button type="button" id="f-all" data-f="all" aria-pressed="true">Alle <span class="c" id="c-all">52</span></button>
+      <button type="button" id="f-miss" data-f="miss" aria-pressed="false">Fehlen <span class="c" id="c-miss">52</span></button>
+      <button type="button" id="f-have" data-f="have" aria-pressed="false">Habe <span class="c" id="c-have">0</span></button>
+    </div>
+  </nav>
+
+  <div class="tools">
+    <label class="switch" for="show-vars"><input type="checkbox" id="show-vars" checked> Varianten anzeigen</label>
+    <p class="hint">⋯ öffnet Foto, Zustand und Wert</p>
+  </div>
+
+  <main id="list"></main>
+  <p class="empty" id="empty" hidden></p>
+
+  <section class="removed" id="removed" hidden>
+    <div class="tools">
+      <h2 class="label" id="removed-h">Entfernte Karten</h2>
+      <button type="button" class="textbtn" id="removed-toggle" aria-expanded="false">Anzeigen</button>
+    </div>
+    <ul id="removed-list" hidden></ul>
+  </section>
+
+  <section class="backup" aria-labelledby="bk-h">
+    <h2 class="label" id="bk-h">Sicherung</h2>
+    <p class="hint" id="bk-note">Deine Haken, Werte und Fotos liegen nur auf diesem Handy. Speichere ab und zu eine Sicherung, zum Beispiel in Google Drive.</p>
+    <div class="bk-actions">
+      <button type="button" class="restore" id="bk-save">Sicherung speichern</button>
+      <button type="button" class="restore" id="bk-load">Sicherung laden</button>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <p>Stand Oktober 2026, sortiert nach Erscheinungsjahr. Jedes Motiv steht einmal in der Liste, als deutsche Karte, wenn es eine gibt. Japanische, chinesische und koreanische Drucke mit gleichem Motiv sind nicht extra aufgeführt.</p>
+    <p>Nur in Japan erschienen sind zwei Motive: die Munch-Promo 289/SM-P und Team Rockets Mimigma-GX. Motive, die es nur in China oder Korea gibt, enthalten die geprüften Kartenlisten nicht.</p>
+    <p>Unter einer Karte stehen ihre Varianten mit gleichem Motiv: Nachdrucke in späteren Sets, Rainbow-Versionen, Stempel- und Jumbo-Karten sowie Sonderdrucke aus Japan und China. Holo- und Reverse-Holo-Versionen und digitale Karten aus TCG Pocket sind nicht enthalten.</p>
+    <p>„Karte“ öffnet die Karte bei Limitless TCG mit großem Bild und Cardmarket-Preis. „Suche“ öffnet eine Bildersuche, wenn es für eine Variante keine eigene Kartenseite gibt. Den Wert trägst du selbst ein; der Gesamtwert zählt nur Karten, die du abgehakt hast. Alles, was du einträgst, bleibt auf deinem Handy und wird nirgends hochgeladen.</p>
+    <p>Kartendaten: <a href="https://limitlesstcg.com/cards?q=mimikyu" target="_blank" rel="noopener noreferrer">Limitless TCG</a>, <a href="https://pokemontcg.io" target="_blank" rel="noopener noreferrer">pokemontcg.io</a>, <a href="https://bulbapedia.bulbagarden.net/wiki/Mimikyu_(TCG)" target="_blank" rel="noopener noreferrer">Bulbapedia</a>, <a href="https://www.tcgcollector.com/pokedex/778/mimikyu/cn" target="_blank" rel="noopener noreferrer">TCG Collector</a>, <a href="https://wiki.52poke.com/wiki/Category:%E8%AC%8E%E6%93%AC%EF%BC%B1%EF%BC%88TCG%EF%BC%89" target="_blank" rel="noopener noreferrer">52poke</a>, <a href="https://www.pokewiki.de/Mimigma_(TCG)" target="_blank" rel="noopener noreferrer">Pokéwiki</a></p>
+  </footer>
+</div>
+
+<input type="file" id="file" accept="image/*" hidden>
+<input type="file" id="bk-file" accept="application/json,.json" hidden>
+
+<div class="toast" id="toast" hidden>
+  <div class="toast-in" role="status">
+    <span id="toast-text"></span>
+    <button type="button" class="undo" id="undo">Rückgängig</button>
+  </div>
+</div>
+
+<div class="sheet" id="sheet" hidden role="dialog" aria-modal="true" aria-labelledby="sh-title">
+  <form class="sheet-in" id="sh-form" novalidate>
+    <div class="sh-head">
+      <div>
+        <h2 class="sh-title" id="sh-title"></h2>
+        <p class="sh-sub" id="sh-sub"></p>
+      </div>
+      <button type="button" class="sh-x" id="sh-x" aria-label="Schließen">×</button>
+    </div>
+
+    <label class="switch" for="sh-own"><input type="checkbox" id="sh-own"> Habe ich</label>
+
+    <div class="sh-photo">
+      <button type="button" class="thumbbtn" id="sh-zoom" aria-label="Foto groß anzeigen" hidden><img class="sh-img" id="sh-img" alt=""></button>
+      <div class="sh-noimg" id="sh-noimg">Noch kein Foto</div>
+      <div class="sh-photo-actions">
+        <span class="flabel">Dein Foto</span>
+        <button type="button" class="btn" id="sh-photo-add">Foto hinzufügen</button>
+        <button type="button" class="btn danger" id="sh-photo-del" hidden>Foto löschen</button>
+        <p class="sh-note" id="sh-note" aria-live="polite" hidden></p>
+      </div>
+    </div>
+    <img class="sh-big" id="sh-big" alt="" hidden>
+
+    <div class="field">
+      <span class="flabel">Zustand</span>
+      <div class="two">
+        <div class="field">
+          <label for="sh-grader">Gegradet von</label>
+          <select id="sh-grader">
+            <option value="">Nicht gegradet</option>
+            <option value="PSA">PSA</option>
+            <option value="BGS">BGS (Beckett)</option>
+            <option value="CGC">CGC</option>
+            <option value="TAG">TAG</option>
+            <option value="ACE">ACE</option>
+            <option value="Andere">Andere</option>
+          </select>
+        </div>
+        <div class="field" id="sh-grade-box" hidden>
+          <label for="sh-grade">Note</label>
+          <select id="sh-grade"></select>
+        </div>
+        <div class="field" id="sh-cond-box">
+          <label for="sh-cond">Zustand der Karte</label>
+          <select id="sh-cond">
+            <option value="">Keine Angabe</option>
+            <option value="MT">Mint (MT)</option>
+            <option value="NM">Near Mint (NM)</option>
+            <option value="EX">Excellent (EX)</option>
+            <option value="GD">Good (GD)</option>
+            <option value="LP">Light Played (LP)</option>
+            <option value="PL">Played (PL)</option>
+            <option value="PO">Poor (PO)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label for="sh-value">Wert in Euro</label>
+      <input type="text" id="sh-value" inputmode="decimal" autocomplete="off" placeholder="z. B. 12,50">
+      <p class="ferr" id="sh-err" hidden>Bitte einen Betrag wie 12,50 eingeben.</p>
+      <a class="sh-link" id="sh-price" href="#" target="_blank" rel="noopener noreferrer" hidden>Aktuellen Cardmarket-Preis bei Limitless ansehen ↗</a>
+    </div>
+
+    <div class="sh-actions">
+      <button type="button" class="btn danger" id="sh-remove">Aus Liste entfernen</button>
+      <button type="submit" class="btn primary" id="sh-save">Speichern</button>
+    </div>
+  </form>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // Jede Karte = ein Motiv. v = Varianten mit gleichem Motiv.
+  // Felder: id, d (Datum), n (Name), s (Set/Herkunft), no (Nummer), r (Seltenheit), t (Stufe), a (Illustration),
+  // only (nur Japan), lt (Pfad bei Limitless TCG), url (andere Kartenseite), q (Bildersuche als Rückfall)
+  var CARDS = [
+    { id: "smp-SM29", d: "2017-04-07", n: "Mimigma", s: "Black Star Promo · Mimikyu Pin Collection", no: "SM29", r: "Promo", t: "promo", a: "Mitsuhiro Arita", lt: "SMP/29",
+      v: [
+        { id: "v-sm29-jumbo-fr", k: "Jumbo", l: "Übergroße Karte, nur in Frankreich (Coffret Mimiqui, 2017)", q: "Mimiqui jumbo SM29 coffret" },
+        { id: "v-jp-smp-294", k: "Japan", l: "Japan-Promo 294/SM-P mit Daiichi-Pan-Logo (2018)", lt: "jp/SMP/294" }
+      ] },
+    { id: "sm2-58", d: "2017-05-05", n: "Mimigma", s: "Stunde der Wächter", no: "58/145", r: "Holo selten", t: "holo", a: "Megumi Mizutani", lt: "GRI/58" },
+    { id: "jp-tr-10", d: "2017-12-31", n: "Team Rockets Mimigma-GX", s: "Deck-Set Ash vs. Team Rocket", no: "010/026", r: "Deck", t: "base", only: true,
+      url: "https://bulbapedia.bulbagarden.net/w/index.php?search=" + encodeURIComponent("Team Rocket's Mimikyu-GX") },
+    { id: "smp-SM99", d: "2018-07-31", n: "Mimigma", s: "Black Star Promo · Mimikyu Sidekick Collection", no: "SM99", r: "Promo", t: "promo", a: "Megumi Mizutani", lt: "SMP/99" },
+    { id: "jp-smp-289", d: "2018-10-27", n: "Mimigma", s: "Munch-Ausstellung „Der Schrei“, Tokio", no: "289/SM-P", r: "Promo", t: "promo", a: "Hasuno", only: true, lt: "jp/SMP/289" },
+    { id: "sm8-149", d: "2018-11-02", n: "Mimigma-GX", s: "Echo des Donners", no: "149/214", r: "Holo-GX", t: "holo", a: "5ban Graphics", lt: "LOT/149",
+      v: [
+        { id: "v-sm8-149-jumbo-fr", k: "Jumbo", l: "Übergroße Karte, nur in Frankreich (Coffret Mimiqui-GX, 2019)", q: "Mimiqui GX jumbo coffret" }
+      ] },
+    { id: "sm8-206", d: "2018-11-02", n: "Mimigma-GX", s: "Echo des Donners", no: "206/214", r: "Full Art", t: "special", a: "5ban Graphics", lt: "LOT/206",
+      v: [
+        { id: "sm8-226", k: "Rainbow Rare", l: "Echo des Donners 226/214, gleiches Motiv in Regenbogenfarben", lt: "LOT/226" }
+      ] },
+    { id: "sm9-53", d: "2019-02-01", n: "Gengar & Mimigma-GX", s: "Teams sind Trumpf", no: "53/181", r: "Holo-GX", t: "holo", a: "Mitsuhiro Arita", lt: "TEU/53" },
+    { id: "sm9-112", d: "2019-02-01", n: "Mimigma", s: "Teams sind Trumpf", no: "112/181", r: "Selten", t: "base", a: "Eri Yamaki", lt: "TEU/112" },
+    { id: "sm9-164", d: "2019-02-01", n: "Gengar & Mimigma-GX", s: "Teams sind Trumpf", no: "164/181", r: "Full Art", t: "special", a: "5ban Graphics", lt: "TEU/164",
+      v: [
+        { id: "sm9-186", k: "Rainbow Rare", l: "Teams sind Trumpf 186/181, gleiches Motiv in Regenbogenfarben", lt: "TEU/186" }
+      ] },
+    { id: "sm9-165", d: "2019-02-01", n: "Gengar & Mimigma-GX", s: "Teams sind Trumpf", no: "165/181", r: "Special Art", t: "special", a: "Midori Harada", lt: "TEU/165" },
+    { id: "smp-SM163", d: "2019-02-01", n: "Mimigma", s: "Black Star Promo · Teams sind Trumpf Blister", no: "SM163", r: "Promo", t: "promo", a: "Saya Tsuruta", lt: "SMP/163" },
+    { id: "sm12-96", d: "2019-11-01", n: "Mimigma", s: "Welten im Wandel", no: "96/236", r: "Nicht so häufig", t: "base", a: "HYOGONOSUKE", lt: "CEC/96" },
+    { id: "sm12-97", d: "2019-11-01", n: "Mimigma", s: "Welten im Wandel", no: "97/236", r: "Selten", t: "base", a: "Yuka Morii", lt: "CEC/97" },
+    { id: "sm12-245", d: "2019-11-01", n: "Mimigma", s: "Welten im Wandel", no: "245/236", r: "Secret Rare", t: "special", a: "You Iribi", lt: "CEC/245" },
+    { id: "swsh3-81", d: "2020-08-14", n: "Mimigma", s: "Flammende Finsternis", no: "081/189", r: "Selten", t: "base", a: "Ryota Murayama", lt: "DAA/81",
+      v: [
+        { id: "v-swsh3-81-tot22", k: "Stempel", l: "Trick or Trade 2022 mit Pikachu-Kürbis-Stempel", q: "Mimikyu 081/189 trick or trade stamp" }
+      ] },
+    { id: "swsh5-62", d: "2021-03-19", n: "Mimigma-V", s: "Kampfstile", no: "062/163", r: "Holo-V", t: "holo", a: "Eske Yoshinob", lt: "BST/62",
+      v: [
+        { id: "swsh9-68", k: "Nachdruck", l: "Strahlende Sterne 068/172, gleiches Motiv (2022)", lt: "BRS/68" }
+      ] },
+    { id: "swsh5-148", d: "2021-03-19", n: "Mimigma-V", s: "Kampfstile", no: "148/163", r: "Full Art", t: "special", a: "Eske Yoshinob", lt: "BST/148" },
+    { id: "swshp-SWSH136", d: "2021-10-08", n: "Mimigma δ", s: "Black Star Promo · Celebrations Collector Chest", no: "SWSH136", r: "Promo", t: "promo", a: "Hasuno", lt: "SP/136",
+      v: [
+        { id: "v-swsh136-jumbo", k: "Jumbo", l: "Übergroße Karte aus der Celebrations Prime Collection (2021)", q: "Mimikyu delta SWSH136 jumbo" }
+      ] },
+    { id: "swsh9-69", d: "2022-02-25", n: "Mimigma-VMAX", s: "Strahlende Sterne", no: "069/172", r: "Holo-VMAX", t: "holo", a: "Studio Bora Inc.", lt: "BRS/69" },
+    { id: "swsh9tg-TG16", d: "2022-02-25", n: "Mimigma-V", s: "Strahlende Sterne · Trainer-Galerie", no: "TG16/TG30", r: "Trainer Gallery", t: "special", a: "saino misaki", lt: "BRS/TG16" },
+    { id: "swsh9tg-TG17", d: "2022-02-25", n: "Mimigma-VMAX", s: "Strahlende Sterne · Trainer-Galerie", no: "TG17/TG30", r: "Trainer Gallery", t: "special", a: "Naoki Saito", lt: "BRS/TG17" },
+    { id: "swsh11-80", d: "2022-09-09", n: "Mimigma", s: "Verlorener Ursprung", no: "080/196", r: "Selten", t: "base", a: "Ligton", lt: "LOR/80" },
+    { id: "svp-4", d: "2023-03-03", n: "Mimigma-ex", s: "Black Star Promo · Mimigma-ex-Box", no: "SVP 004", r: "Promo", t: "promo", a: "PLANETA Yamashita", lt: "SVP/4",
+      v: [
+        { id: "v-svp4-jumbo", k: "Jumbo", l: "Übergroße Karte aus der Mimigma-ex-Box (2023)", q: "Mimikyu ex SVP 004 jumbo" },
+        { id: "v-svp4-pp", k: "Stempel", l: "Prize Pack Serie 3 mit Play!-Pokémon-Stempel", q: "Mimikyu ex SVP 004 prize pack play pokemon stamp" }
+      ] },
+    { id: "sv2-97", d: "2023-06-09", n: "Mimigma", s: "Entwicklungen in Paldea", no: "097/193", r: "Holo selten", t: "holo", a: "Kagemaru Himeno", lt: "PAL/97",
+      v: [
+        { id: "v-sv2-97-tot23", k: "Stempel", l: "Trick or Trade 2023 mit Pikachu-Kürbis-Stempel", q: "Mimikyu 097/193 trick or trade 2023" },
+        { id: "v-sv2-97-pp", k: "Stempel", l: "Prize Pack mit Play!-Pokémon-Stempel", q: "Mimikyu 097/193 prize pack play pokemon stamp" },
+        { id: "sv4pt5-37", k: "Nachdruck", l: "Paldeas Schicksale 037/091, gleiches Motiv (2024)", lt: "PAF/37" },
+        { id: "v-sv2-97-tot24", k: "Stempel", l: "Trick or Trade 2024, Cosmos-Holo mit Kürbis-Stempel", q: "Mimikyu trick or trade 2024 cosmos holo" },
+        { id: "v-jp-svp-156", k: "Japan", l: "Japan-Promo 156/SV-P mit Pokémon-Card-Gym-Logo (2024)", lt: "jp/SVP/156" },
+        { id: "v-cn-gp3-1306", k: "China", l: "Gem Pack Vol. 3, Karte 13 06/07 mit goldenem Gem-Pack-Logo (2025)", url: "https://www.tcgcollector.com/pokedex/778/mimikyu/cn" }
+      ] },
+    { id: "svp-75", d: "2024-01-26", n: "Mimigma", s: "Black Star Promo · Paldeas Schicksale Top-Trainer-Box", no: "SVP 075", r: "Promo", t: "promo", a: "Mitsuhiro Arita", lt: "SVP/75",
+      v: [
+        { id: "v-svp75-pc", k: "Stempel", l: "Pokémon-Center-Version der Top-Trainer-Box mit Pokémon-Center-Logo", q: "Mimikyu SVP 075 pokemon center stamp" }
+      ] },
+    { id: "sv4pt5-160", d: "2024-01-26", n: "Mimigma", s: "Paldeas Schicksale", no: "160/091", r: "Shiny Rare", t: "special", a: "Nelnal", lt: "PAF/160",
+      v: [
+        { id: "v-cn-gp3-1307", k: "China", l: "Gem Pack Vol. 3, Karte 13 07/07 Illustration Rare (2025). Motiv bitte über „Ansehen“ prüfen", url: "https://www.tcgcollector.com/pokedex/778/mimikyu/cn" }
+      ] },
+    { id: "sv9-69", d: "2025-03-28", n: "Mimigma-ex", s: "Reisegefährten", no: "069/159", r: "Double Rare", t: "holo", a: "PLANETA Igarashi", lt: "JTG/69",
+      v: [
+        { id: "v-sv9-69-stamp", k: "Stempel", l: "Version mit Set-Logo-Stempel", q: "Mimikyu ex 069/159 journey together stamped" }
+      ] },
+    { id: "sv10-87", d: "2025-05-30", n: "Team Rockets Mimigma", s: "Ewige Rivalen", no: "087/182", r: "Nicht so häufig", t: "base", a: "DOM", lt: "DRI/87",
+      v: [
+        { id: "v-sv10-87-bb", k: "Stempel", l: "Build & Battle / Prerelease, Cosmos-Holo mit Set-Logo", q: "Team Rocket's Mimikyu 087/182 prerelease stamp" },
+        { id: "me2pt5-97", k: "Nachdruck", l: "Erhabene Helden 097/217, gleiches Motiv (2026)", lt: "ASC/97" }
+      ] },
+    { id: "me2-42", d: "2025-11-14", n: "Mimigma", s: "Fatale Flammen", no: "042/094", r: "Häufig", t: "base", a: "miki kudo", lt: "PFL/42" },
+    { id: "me2pt5-238", d: "2026-01-30", n: "Team Rockets Mimigma", s: "Erhabene Helden", no: "238/217", r: "Illustration Rare", t: "special", a: "GOSSAN", lt: "ASC/238" }
+  ];
+
+  var GRADERS = ["PSA", "BGS", "CGC", "TAG", "ACE", "Andere"];
+  var GRADES = ["10 Black Label", "10 Pristine", "10", "9.5", "9", "8.5", "8", "7.5", "7", "6.5", "6", "5.5", "5", "4.5", "4", "3.5", "3", "2.5", "2", "1.5", "1"];
+  var CONDS = { MT: "Mint", NM: "Near Mint", EX: "Excellent", GD: "Good", LP: "Light Played", PL: "Played", PO: "Poor" };
+
+  var LS_OWNED = "mimigma-sammlung-v1";
+  var LS_HIDDEN = "mimigma-hidden-v1";
+  var LS_PHOTOS = "mimigma-photos-v1";
+  var LS_INFO = "mimigma-info-v1";
+  var LS_FILTER = "mimigma-filter-v1";
+  var LS_VARS = "mimigma-vars-v1";
+  var DOC_PATH = "sammlung/mimigma";
+
+  // Flatten into release order: each card followed by its variants.
+  var ENTRIES = [];
+  var BY = {};
+  CARDS.forEach(function (c) {
+    var e = { id: c.id, isVar: false, c: c, src: c, year: c.d.slice(0, 4) };
+    ENTRIES.push(e);
+    BY[c.id] = e;
+    (c.v || []).forEach(function (v) {
+      var ve = { id: v.id, isVar: true, c: c, v: v, src: v, year: e.year };
+      ENTRIES.push(ve);
+      BY[v.id] = ve;
+    });
+  });
+
+  function lsGet(k) { try { return window.localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { window.localStorage.setItem(k, v); } catch (e) { /* storage unavailable */ } }
+  function parse(s) { try { return JSON.parse(s); } catch (e) { return null; } }
+  function clean(o) {
+    var r = {};
+    if (o && typeof o === "object") {
+      Object.keys(o).forEach(function (k) { if (BY[k] && o[k] === true) r[k] = true; });
+    }
+    return r;
+  }
+  var ASSET_ID = /^[A-Za-z0-9_-]{8,64}$/;
+  function cleanPhotos(o) {
+    var r = {};
+    if (o && typeof o === "object") {
+      Object.keys(o).forEach(function (k) { if (BY[k] && typeof o[k] === "string" && ASSET_ID.test(o[k])) r[k] = o[k]; });
+    }
+    return r;
+  }
+  function cleanInfoOne(x) {
+    if (!x || typeof x !== "object") return null;
+    var g = GRADERS.indexOf(x.g) >= 0 ? x.g : null;
+    var gr = g && GRADES.indexOf(x.gr) >= 0 ? x.gr : null;
+    var c = !g && CONDS[x.c] ? x.c : null;
+    var v = typeof x.v === "number" && isFinite(x.v) && x.v >= 0 && x.v < 10000000 ? Math.round(x.v * 100) / 100 : null;
+    if (!g && !c && v === null) return null;
+    return { g: g, gr: gr, c: c, v: v };
+  }
+  function cleanInfo(o) {
+    var r = {};
+    if (o && typeof o === "object") {
+      Object.keys(o).forEach(function (k) { if (BY[k]) { var x = cleanInfoOne(o[k]); if (x) r[k] = x; } });
+    }
+    return r;
+  }
+  function count(o) { return Object.keys(o).length; }
+  function el(tag, cls) { var n = document.createElement(tag); if (cls) n.className = cls; return n; }
+  var photoUrls = {};   // photo key -> object URL of the image stored on this phone
+  function blobUrl(key) { return photoUrls[key] || ""; }
+
+  var euro = (window.Intl && Intl.NumberFormat) ? new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }) : null;
+  function fmtEuro(v) { return euro ? euro.format(v) : v.toFixed(2).replace(".", ",") + " €"; }
+  function fmtPlain(v) { return v.toFixed(2).replace(".", ","); }
+  function parseEuro(s) {
+    s = String(s || "").replace(/€|eur/gi, "").replace(/\s/g, "").replace(/,-+$/, "");
+    if (!s) return { ok: true, v: null };
+    if (s.indexOf(",") >= 0) s = s.replace(/\./g, "").replace(",", ".");
+    else if (/^\d{1,3}(\.\d{3})+$/.test(s)) s = s.replace(/\./g, "");
+    if (!/^\d+(\.\d{1,2})?$/.test(s)) return { ok: false };
+    var v = parseFloat(s);
+    if (!isFinite(v) || v >= 10000000) return { ok: false };
+    return { ok: true, v: Math.round(v * 100) / 100 };
+  }
+  function gradeLabel(x) {
+    if (!x) return "";
+    if (x.g) return (x.g === "Andere" ? "Grading" : x.g) + (x.gr ? " " + x.gr : "");
+    return "";
+  }
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---------- state ----------
+  var owned = clean(parse(lsGet(LS_OWNED)));
+  var hidden = clean(parse(lsGet(LS_HIDDEN)));
+  var photos = cleanPhotos(parse(lsGet(LS_PHOTOS)));
+  var info = cleanInfo(parse(lsGet(LS_INFO)));
+  var filter = lsGet(LS_FILTER);
+  if (filter !== "all" && filter !== "miss" && filter !== "have") filter = "all";
+  var showVars = lsGet(LS_VARS) !== "0";
+
+  var mode = "loading";      // loading | local | error
+  var errText = "";
+  var canWrite = true;
+  var idb = null;
+  var uploading = 0;
+  var LS_BACKUP = "mimigma-backup-v1";
+  var lastBackup = lsGet(LS_BACKUP);
+
+  function saveLocal() {
+    try {
+      window.localStorage.setItem(LS_OWNED, JSON.stringify(owned));
+      window.localStorage.setItem(LS_HIDDEN, JSON.stringify(hidden));
+      window.localStorage.setItem(LS_PHOTOS, JSON.stringify(photos));
+      window.localStorage.setItem(LS_INFO, JSON.stringify(info));
+      if (mode === "error") mode = "local";
+    } catch (e) {
+      mode = "error";
+      errText = "Nicht gespeichert: Der Speicher auf dem Handy ist voll oder gesperrt.";
+    }
+    if (typeof setSync === "function" && syncEl) setSync();
+  }
+
+  // ---------- build list ----------
+  var listEl = document.getElementById("list");
+  var rowEls = {};
+  var yearEls = [];
+
+  var CHECK_SVG = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.6 6.6 11.6 12.5 4.8"/></svg>';
+  var ARROW_SVG = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 2.5h5v5M9.5 2.5 3 9"/></svg>';
+  var DOTS_SVG = '<svg viewBox="0 0 18 18" aria-hidden="true"><circle cx="3.5" cy="9" r="1.6"/><circle cx="9" cy="9" r="1.6"/><circle cx="14.5" cy="9" r="1.6"/></svg>';
+
+  function entryTitle(e) {
+    return e.isVar ? e.c.n + " " + e.c.no + " · " + e.v.k : e.c.n + " " + e.c.no;
+  }
+
+  function linkFor(e) {
+    var s = e.src;
+    if (s.lt) return { href: "https://limitlesstcg.com/cards/" + s.lt, text: "Karte", what: "Karte bei Limitless TCG ansehen" };
+    if (s.url) return { href: s.url, text: "Ansehen", what: "Kartenseite ansehen" };
+    return { href: "https://www.google.com/search?tbm=isch&q=" + encodeURIComponent(s.q + " pokemon card"), text: "Suche", what: "Bildersuche öffnen" };
+  }
+
+  function makeRow(e) {
+    var c = e.c;
+    var li = el("li", e.isVar ? "row var" : "row");
+    li.id = "k-" + e.id;
+    var b = el("button", "toggle");
+    b.type = "button";
+    b.setAttribute("aria-pressed", "false");
+    b.setAttribute("data-id", e.id);
+    var sleeve = el("span", "sleeve");
+    sleeve.setAttribute("aria-hidden", "true");
+    sleeve.innerHTML = CHECK_SVG;
+    var t = el("span", "txt");
+
+    if (!e.isVar) {
+      var n = el("span", "name");
+      n.textContent = c.n;
+      var m = el("span", "meta");
+      var sn = el("span", "setname");
+      sn.textContent = c.s;
+      var num = el("span", "num");
+      num.textContent = c.no;
+      m.appendChild(sn);
+      m.appendChild(num);
+      var chip = el("span", "chip t-" + c.t);
+      chip.textContent = c.t === "promo" ? "★ Promo" : c.r;
+      m.appendChild(chip);
+      if (c.only) {
+        var only = el("span", "chip t-only");
+        only.textContent = "Nur in Japan";
+        m.appendChild(only);
+      }
+      t.appendChild(n);
+      t.appendChild(m);
+    } else {
+      var vm = el("span", "meta");
+      var kind = el("span", "chip " + (e.v.k === "Rainbow Rare" ? "t-special" : "t-kind"));
+      kind.textContent = e.v.k;
+      var vn = el("span", "vname");
+      vn.textContent = e.v.l;
+      vm.appendChild(kind);
+      t.appendChild(vm);
+      t.appendChild(vn);
+    }
+    var inf = el("span", "info");
+    t.appendChild(inf);
+    var sub = el("span", "sub");
+    sub.textContent = e.isVar ? "Variante von " + c.n + " " + c.no : (c.a ? "Illustration: " + c.a : "");
+    if (sub.textContent) t.appendChild(sub);
+
+    b.appendChild(sleeve);
+    b.appendChild(t);
+
+    var lk = linkFor(e);
+    var a = el("a", "peek");
+    a.href = lk.href;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.innerHTML = lk.text + ARROW_SVG;
+    a.setAttribute("aria-label", entryTitle(e) + ": " + lk.what + ", öffnet neuen Tab");
+
+    var more = el("button", "more");
+    more.type = "button";
+    more.innerHTML = DOTS_SVG;
+    more.setAttribute("data-open", e.id);
+    more.setAttribute("aria-label", "Details zu " + entryTitle(e) + ": Foto, Zustand und Wert");
+    var dots = more.firstChild;
+    // With a photo, the details button shows the photo instead of the dots.
+    var img = el("img", "thumb");
+    img.alt = "";
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.hidden = true;
+    more.appendChild(img);
+
+    li.appendChild(b);
+    li.appendChild(a);
+    li.appendChild(more);
+    rowEls[e.id] = { li: li, b: b, dots: dots, img: img, inf: inf, shownPhoto: "", shownInfo: "" };
+    return li;
+  }
+
+  (function buildList() {
+    var byYear = {};
+    var order = [];
+    ENTRIES.forEach(function (e) {
+      if (!byYear[e.year]) { byYear[e.year] = []; order.push(e.year); }
+      byYear[e.year].push(e);
+    });
+    order.forEach(function (y) {
+      var sec = el("section", "year");
+      sec.setAttribute("aria-labelledby", "y-" + y);
+      var head = el("div", "year-head");
+      var h2 = el("h2", "year-tab");
+      h2.id = "y-" + y;
+      h2.textContent = y;
+      var meta = el("div", "year-meta");
+      var cnt = el("span", "year-count");
+      var ybar = el("span", "year-bar");
+      var yfill = el("span");
+      ybar.appendChild(yfill);
+      meta.appendChild(cnt);
+      meta.appendChild(ybar);
+      head.appendChild(h2);
+      head.appendChild(meta);
+      var ul = el("ul", "rows");
+      byYear[y].forEach(function (e) { ul.appendChild(makeRow(e)); });
+      sec.appendChild(head);
+      sec.appendChild(ul);
+      listEl.appendChild(sec);
+      yearEls.push({ sec: sec, cnt: cnt, fill: yfill, ids: byYear[y].map(function (e) { return e.id; }) });
+    });
+  })();
+
+  // Keep the sticky year tabs right below the sticky filter bar.
+  var filtersEl = document.getElementById("filters");
+  function setFilterHeight() {
+    document.documentElement.style.setProperty("--fh", filtersEl.offsetHeight + "px");
+  }
+  setFilterHeight();
+  window.addEventListener("resize", setFilterHeight);
+  if (window.ResizeObserver) new ResizeObserver(setFilterHeight).observe(filtersEl);
+
+  // ---------- binder ----------
+  var binderEl = document.getElementById("binder");
+  var binderNote = document.getElementById("binder-note");
+  var slotEls = {};
+  var binderKey = "";
+
+  function inScope(id) {
+    if (hidden[id]) return false;
+    if (BY[id].isVar && !showVars) return false;
+    return true;
+  }
+  function scopeIds() { return ENTRIES.map(function (e) { return e.id; }).filter(inScope); }
+
+  function buildBinder(ids) {
+    var key = ids.join(",");
+    if (key === binderKey) return;
+    binderKey = key;
+    binderEl.textContent = "";
+    slotEls = {};
+    var pages = Math.max(1, Math.ceil(ids.length / 9));
+    var cols = pages <= 5 ? pages : Math.ceil(pages / 2);
+    binderEl.style.gridTemplateColumns = "repeat(" + cols + ", minmax(0, 1fr))";
+    binderNote.textContent = pages + (pages === 1 ? " Seite" : " Seiten") + " à 9 Fächer · Fach antippen";
+    for (var p = 0; p < pages; p++) {
+      var page = el("div", "page");
+      var pocket = el("div", "pocket");
+      for (var i = 0; i < 9; i++) {
+        var id = ids[p * 9 + i];
+        if (id) {
+          var slot = el("button", "slot");
+          slot.type = "button";
+          slot.setAttribute("data-id", id);
+          slotEls[id] = { el: slot, shown: "" };
+          pocket.appendChild(slot);
+        } else {
+          var free = el("span", "slot free");
+          free.setAttribute("aria-hidden", "true");
+          pocket.appendChild(free);
+        }
+      }
+      var lbl = el("span", "page-label");
+      lbl.textContent = "S. " + (p + 1);
+      page.appendChild(pocket);
+      page.appendChild(lbl);
+      binderEl.appendChild(page);
+    }
+  }
+
+  // ---------- render ----------
+  var tallyN = document.getElementById("tally-n");
+  var tallyTotal = document.getElementById("tally-total");
+  var tallyPct = document.getElementById("tally-pct");
+  var scopeEl = document.getElementById("scope");
+  var worthN = document.getElementById("worth-n");
+  var worthNote = document.getElementById("worth-note");
+  var bar = document.getElementById("bar");
+  var barFill = document.getElementById("bar-fill");
+  var emptyEl = document.getElementById("empty");
+  var segBtns = Array.prototype.slice.call(document.querySelectorAll(".seg button"));
+  var varsBox = document.getElementById("show-vars");
+  var appEl = document.getElementById("app");
+  var removedSec = document.getElementById("removed");
+  var removedList = document.getElementById("removed-list");
+  var removedToggle = document.getElementById("removed-toggle");
+  var removedH = document.getElementById("removed-h");
+
+  function canPhoto() { return !!idb; }
+  function photoOf(id) { var k = photos[id]; return k && photoUrls[k] ? k : ""; }
+
+  function fillInfo(r, id) {
+    var x = info[id];
+    var key = x ? JSON.stringify(x) : "";
+    if (key === r.shownInfo) return;
+    r.shownInfo = key;
+    r.inf.textContent = "";
+    if (!x) return;
+    if (x.g) {
+      var g = el("span", "chip t-grade");
+      g.textContent = gradeLabel(x);
+      r.inf.appendChild(g);
+    } else if (x.c) {
+      var c = el("span", "chip t-cond");
+      c.textContent = x.c;
+      c.title = CONDS[x.c];
+      r.inf.appendChild(c);
+    }
+    if (x.v !== null) {
+      var p = el("span", "price");
+      p.textContent = fmtEuro(x.v);
+      r.inf.appendChild(p);
+    }
+  }
+
+  function render() {
+    var ids = scopeIds();
+    buildBinder(ids);
+    var total = ids.length;
+    var have = ids.filter(function (id) { return owned[id]; }).length;
+    var motifs = ids.filter(function (id) { return !BY[id].isVar; }).length;
+    tallyN.textContent = have;
+    tallyTotal.textContent = total;
+    tallyPct.textContent = total ? Math.round((have / total) * 100) + " %" : "0 %";
+    barFill.style.width = total ? (have / total) * 100 + "%" : "0";
+    bar.setAttribute("aria-valuemax", String(total));
+    bar.setAttribute("aria-valuenow", String(have));
+    scopeEl.textContent = showVars
+      ? motifs + " Motive und " + (total - motifs) + " Varianten"
+      : motifs + " Motive, Varianten ausgeblendet";
+
+    // Collection value: every ticked card that is still on the list, variants included.
+    var sum = 0, valued = 0, ownedAll = 0;
+    ENTRIES.forEach(function (e) {
+      if (!owned[e.id] || hidden[e.id]) return;
+      ownedAll++;
+      var x = info[e.id];
+      if (x && x.v !== null) { sum += x.v; valued++; }
+    });
+    worthN.textContent = fmtEuro(sum);
+    worthNote.textContent = ownedAll === 0
+      ? "Hake Karten ab und trag über ⋯ ihren Wert ein."
+      : valued === ownedAll
+        ? "Wert bei allen " + ownedAll + " Karten eingetragen."
+        : "Wert bei " + valued + " von " + ownedAll + " Karten eingetragen. Fehlende Werte trägst du über ⋯ ein.";
+
+    document.getElementById("c-all").textContent = total;
+    document.getElementById("c-miss").textContent = total - have;
+    document.getElementById("c-have").textContent = have;
+    segBtns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-f") === filter)); });
+    varsBox.checked = showVars;
+
+    ENTRIES.forEach(function (e) {
+      var r = rowEls[e.id];
+      var h = !!owned[e.id];
+      r.li.classList.toggle("has", h);
+      r.b.setAttribute("aria-pressed", String(h));
+      r.li.hidden = !inScope(e.id) || (filter === "miss" ? h : filter === "have" ? !h : false);
+      var pid = photoOf(e.id);
+      if (pid !== r.shownPhoto) {
+        r.shownPhoto = pid;
+        if (pid) r.img.src = blobUrl(pid); else r.img.removeAttribute("src");
+        r.img.hidden = !pid;
+        r.dots.style.display = pid ? "none" : "";
+      }
+      fillInfo(r, e.id);
+      var s = slotEls[e.id];
+      if (s) {
+        s.el.classList.toggle("has", h);
+        s.el.classList.toggle("pic", !!pid);
+        if (pid !== s.shown) {
+          s.shown = pid;
+          s.el.style.backgroundImage = pid ? 'url("' + blobUrl(pid) + '")' : "";
+        }
+        s.el.setAttribute("aria-label", entryTitle(e) + ": " + (h ? "vorhanden" : "fehlt") + (pid ? ", mit Foto" : ""));
+      }
+    });
+
+    var anyVisible = false;
+    yearEls.forEach(function (y) {
+      var inYear = y.ids.filter(inScope);
+      var n = inYear.filter(function (id) { return owned[id]; }).length;
+      var done = inYear.length > 0 && n === inYear.length;
+      y.cnt.textContent = done ? "komplett · " + n + " von " + inYear.length : n + " von " + inYear.length;
+      y.fill.style.width = inYear.length ? (n / inYear.length) * 100 + "%" : "0";
+      y.sec.classList.toggle("done", done);
+      var allHidden = y.ids.every(function (id) { return rowEls[id].li.hidden; });
+      y.sec.hidden = allHidden;
+      if (!allHidden) anyVisible = true;
+    });
+
+    if (anyVisible) {
+      emptyEl.hidden = true;
+    } else {
+      emptyEl.textContent = filter === "miss"
+        ? "Du hast alle " + total + " Karten. Sammlung komplett!"
+        : filter === "have"
+          ? "Noch keine Karte abgehakt. Tippe auf eine Karte, sobald du sie besitzt."
+          : "Alle Karten sind entfernt. Ganz unten kannst du sie zurückholen.";
+      emptyEl.hidden = false;
+    }
+
+    renderRemoved();
+    if (sheetId) refreshSheetPhoto();
+  }
+
+  var removedOpen = false;
+  function renderRemoved() {
+    var ids = ENTRIES.map(function (e) { return e.id; }).filter(function (id) { return hidden[id]; });
+    removedSec.hidden = ids.length === 0;
+    removedH.textContent = "Entfernte Karten (" + ids.length + ")";
+    removedToggle.textContent = removedOpen ? "Ausblenden" : "Anzeigen";
+    removedToggle.setAttribute("aria-expanded", String(removedOpen));
+    removedList.hidden = !removedOpen;
+    removedList.textContent = "";
+    if (!removedOpen) return;
+    ids.forEach(function (id) {
+      var e = BY[id];
+      var li = el("li");
+      var tx = el("span", "rtxt");
+      tx.textContent = e.isVar ? e.v.k + ": " + e.v.l + " (" + e.c.n + " " + e.c.no + ")" : e.c.n + " · " + e.c.s + " " + e.c.no;
+      li.appendChild(tx);
+      if (canWrite) {
+        var btn = el("button", "restore");
+        btn.type = "button";
+        btn.textContent = "Zurückholen";
+        btn.setAttribute("data-restore", id);
+        li.appendChild(btn);
+      }
+      removedList.appendChild(li);
+    });
+  }
+
+  // ---------- status ----------
+  var syncEl = document.getElementById("sync");
+  var syncText = document.getElementById("sync-text");
+
+  function fmtDate(iso) {
+    var d = new Date(iso);
+    return isNaN(d) ? "" : d.toLocaleDateString("de-DE", { day: "numeric", month: "numeric", year: "numeric" });
+  }
+
+  function setSync() {
+    var st, txt;
+    if (mode === "loading") { st = "loading"; txt = "Lade deine Sammlung …"; }
+    else if (mode === "error") { st = "error"; txt = errText; }
+    else if (uploading) { st = "saving"; txt = "Speichert Foto …"; }
+    else {
+      st = "saved";
+      txt = "Gespeichert auf diesem Handy · " + (lastBackup ? "letzte Sicherung " + fmtDate(lastBackup) : "noch keine Sicherung");
+    }
+    syncEl.setAttribute("data-state", st);
+    syncText.textContent = txt;
+  }
+
+  // Everything is saved right away in saveLocal(); queue() only refreshes the status line.
+  function queue() { setSync(); }
+
+  // ---------- photo storage on this phone (IndexedDB) ----------
+  function idbOpen() {
+    return new Promise(function (resolve, reject) {
+      if (!window.indexedDB) { reject(new Error("no idb")); return; }
+      var rq = indexedDB.open("mimigma-fotos", 1);
+      rq.onupgradeneeded = function () { rq.result.createObjectStore("photos"); };
+      rq.onsuccess = function () { resolve(rq.result); };
+      rq.onerror = function () { reject(rq.error); };
+    });
+  }
+  function idbReq(modeRw, fn) {
+    return new Promise(function (resolve, reject) {
+      var tx = idb.transaction("photos", modeRw);
+      var rq = fn(tx.objectStore("photos"));
+      tx.oncomplete = function () { resolve(rq ? rq.result : undefined); };
+      tx.onerror = function () { reject(tx.error); };
+      tx.onabort = function () { reject(tx.error || { code: "quota" }); };
+    });
+  }
+  function idbGet(key) { return idbReq("readonly", function (st) { return st.get(key); }); }
+  function idbPut(key, blob) { return idbReq("readwrite", function (st) { return st.put(blob, key); }); }
+  function idbDel(key) { return idbReq("readwrite", function (st) { return st.delete(key); }); }
+  function idbClear() { return idbReq("readwrite", function (st) { return st.clear(); }); }
+  function newKey() { return "p" + Date.now().toString(36) + Math.random().toString(36).slice(2, 10); }
+  function forgetUrl(key) {
+    if (photoUrls[key]) { URL.revokeObjectURL(photoUrls[key]); delete photoUrls[key]; }
+  }
+
+  function loadPhotos() {
+    var keys = Object.keys(photos).map(function (id) { return photos[id]; });
+    return Promise.all(keys.map(function (k) {
+      return idbGet(k).then(function (b) { if (b) photoUrls[k] = URL.createObjectURL(b); }, function () {});
+    }));
+  }
+
+  // ---------- interactions ----------
+  function setOwned(id, v) {
+    if (!canWrite) return;
+    if (v) owned[id] = true; else delete owned[id];
+    saveLocal();
+    render();
+    queue("owned", id, v);
+  }
+  function toggle(id) { setOwned(id, !owned[id]); }
+
+  var toastEl = document.getElementById("toast");
+  var toastText = document.getElementById("toast-text");
+  var undoBtn = document.getElementById("undo");
+  var toastTimer = null;
+  var undoFn = null;
+
+  function showToast(text, fn) {
+    toastText.textContent = text;
+    undoFn = fn || null;
+    undoBtn.hidden = !undoFn;
+    toastEl.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.hidden = true; undoFn = null; }, fn ? 6000 : 4500);
+  }
+
+  undoBtn.addEventListener("click", function () {
+    if (undoFn) undoFn();
+    undoFn = null;
+    toastEl.hidden = true;
+  });
+
+  function setHidden(id, v) {
+    if (!canWrite) return;
+    if (v) hidden[id] = true; else delete hidden[id];
+    saveLocal();
+    render();
+    queue("hidden", id, v);
+  }
+
+  // ---------- own photos ----------
+  var fileInput = document.getElementById("file");
+  var photoTarget = null;
+
+  function pickPhoto(id) {
+    if (!canPhoto()) return;
+    photoTarget = id;
+    fileInput.value = "";
+    fileInput.click();
+  }
+
+  function shrink(file) {
+    return new Promise(function (resolve, reject) {
+      var url = URL.createObjectURL(file);
+      var img = new Image();
+      img.onload = function () {
+        var max = 1200;
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var s = Math.min(1, max / Math.max(w, h));
+        var cv = document.createElement("canvas");
+        cv.width = Math.max(1, Math.round(w * s));
+        cv.height = Math.max(1, Math.round(h * s));
+        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        cv.toBlob(function (b) { if (b) resolve(b); else reject({ code: "encode" }); }, "image/jpeg", 0.85);
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); reject({ code: "decode" }); };
+      img.src = url;
+    });
+  }
+
+  function photoError(e) {
+    var code = e && e.code;
+    if (code === "decode") return "Dieses Bild kann ich nicht lesen. Wähle ein JPG- oder PNG-Foto.";
+    return "Foto nicht gespeichert. Vielleicht ist der Speicher voll. Lösche ein altes Foto und versuche es erneut.";
+  }
+
+  var upl = {};   // card ids with an upload in progress
+  function tell(id, text, isErr) {
+    // Inside the open details sheet the message goes there, so no toast covers its buttons.
+    if (sheetId === id) setNote(text, isErr); else showToast(text);
+  }
+
+  fileInput.addEventListener("change", function () {
+    var file = fileInput.files && fileInput.files[0];
+    var id = photoTarget;
+    photoTarget = null;
+    if (!file || !id || !canPhoto() || upl[id]) return;
+    var r = rowEls[id];
+    r.li.classList.add("busy");
+    upl[id] = true;
+    uploading++;
+    setSync();
+    if (sheetId === id) { setNote("Foto wird gespeichert …"); refreshSheetPhoto(); }
+    var key = newKey();
+    shrink(file).then(function (blob) {
+      return idbPut(key, blob).then(function () { photoUrls[key] = URL.createObjectURL(blob); });
+    }).then(function () {
+      var old = photos[id];
+      photos[id] = key;
+      saveLocal();
+      if (old && old !== key) { forgetUrl(old); idbDel(old).catch(function () {}); }
+      tell(id, sheetId === id ? "Foto gespeichert." : "Foto gespeichert: " + entryTitle(BY[id]));
+    }, function (e) {
+      tell(id, photoError(e), true);
+    }).then(function () {
+      delete upl[id];
+      uploading--;
+      r.li.classList.remove("busy");
+      render();
+      setSync();
+    });
+  });
+
+  // ---------- details sheet ----------
+  var sheet = document.getElementById("sheet");
+  var shForm = document.getElementById("sh-form");
+  var shTitle = document.getElementById("sh-title");
+  var shSub = document.getElementById("sh-sub");
+  var shX = document.getElementById("sh-x");
+  var shZoom = document.getElementById("sh-zoom");
+  var shImg = document.getElementById("sh-img");
+  var shBig = document.getElementById("sh-big");
+  var shNoImg = document.getElementById("sh-noimg");
+  var shAdd = document.getElementById("sh-photo-add");
+  var shDel = document.getElementById("sh-photo-del");
+  var shGrader = document.getElementById("sh-grader");
+  var shGradeBox = document.getElementById("sh-grade-box");
+  var shGrade = document.getElementById("sh-grade");
+  var shCondBox = document.getElementById("sh-cond-box");
+  var shCond = document.getElementById("sh-cond");
+  var shValue = document.getElementById("sh-value");
+  var shErr = document.getElementById("sh-err");
+  var shPrice = document.getElementById("sh-price");
+  var shRemove = document.getElementById("sh-remove");
+  var shSave = document.getElementById("sh-save");
+  var shOwn = document.getElementById("sh-own");
+  var shNote = document.getElementById("sh-note");
+  var sheetId = null;
+  var sheetReturn = null;
+  var delArmed = false;
+  var shShown = null;
+
+  function setNote(text, isErr) {
+    shNote.textContent = text || "";
+    shNote.hidden = !text;
+    shNote.classList.toggle("err", !!isErr);
+  }
+
+  GRADES.forEach(function (g) {
+    var o = el("option");
+    o.value = g;
+    o.textContent = g;
+    shGrade.appendChild(o);
+  });
+
+  function syncGradeFields() {
+    var graded = !!shGrader.value;
+    shGradeBox.hidden = !graded;
+    shCondBox.hidden = graded;
+  }
+  shGrader.addEventListener("change", syncGradeFields);
+
+  function refreshSheetPhoto() {
+    if (!sheetId) return;
+    var pid = photoOf(sheetId);
+    if (pid !== shShown) {
+      shShown = pid;
+      if (pid) shImg.src = blobUrl(pid); else shImg.removeAttribute("src");
+      shBig.hidden = true;
+      shBig.removeAttribute("src");
+    }
+    shZoom.hidden = !pid;
+    shNoImg.hidden = !!pid;
+    var can = canPhoto();
+    var busy = !!upl[sheetId];
+    shAdd.hidden = !can;
+    shAdd.disabled = busy;
+    shAdd.textContent = busy ? "Lädt …" : pid ? "Foto ersetzen" : "Foto hinzufügen";
+    shDel.hidden = !can || !pid || busy;
+    if (!delArmed) shDel.textContent = "Foto löschen";
+    shNoImg.textContent = busy ? "Lädt …" : "Noch kein Foto";
+  }
+
+  function openSheet(id) {
+    var e = BY[id];
+    sheetId = id;
+    sheetReturn = document.activeElement;
+    delArmed = false;
+    shShown = null;
+    shTitle.textContent = e.c.n + (e.isVar ? " · " + e.v.k : "");
+    shSub.textContent = e.isVar ? e.v.l : e.c.s + " · " + e.c.no;
+    shOwn.checked = !!owned[id];
+    setNote("");
+    var x = info[id] || { g: null, gr: null, c: null, v: null };
+    shGrader.value = x.g || "";
+    shGrade.value = x.gr || "10";
+    shCond.value = x.c || "";
+    shValue.value = x.v !== null ? fmtPlain(x.v) : "";
+    shErr.hidden = true;
+    syncGradeFields();
+    if (e.src.lt) {
+      shPrice.href = "https://limitlesstcg.com/cards/" + e.src.lt;
+      shPrice.textContent = e.src.lt.indexOf("jp/") === 0
+        ? "Karte bei Limitless TCG ansehen ↗"
+        : "Aktuellen Cardmarket-Preis bei Limitless TCG ansehen ↗";
+      shPrice.hidden = false;
+    } else {
+      shPrice.hidden = true;
+    }
+    var ro = !canWrite;
+    [shOwn, shGrader, shGrade, shCond, shValue].forEach(function (f) { f.disabled = ro; });
+    shSave.hidden = ro;
+    shRemove.hidden = ro;
+    refreshSheetPhoto();
+    sheet.hidden = false;
+    appEl.inert = true;
+    document.documentElement.style.overflow = "hidden";
+    shX.focus();
+  }
+
+  function closeSheet() {
+    sheet.hidden = true;
+    sheetId = null;
+    appEl.inert = false;
+    document.documentElement.style.overflow = "";
+    if (sheetReturn && sheetReturn.focus) { try { sheetReturn.focus({ preventScroll: true }); } catch (e) { /* ignore */ } }
+  }
+
+  shX.addEventListener("click", closeSheet);
+  sheet.addEventListener("click", function (ev) { if (ev.target === sheet) closeSheet(); });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !sheet.hidden) closeSheet(); });
+
+  shZoom.addEventListener("click", function () {
+    if (!sheetId || !photos[sheetId]) return;
+    if (shBig.hidden) {
+      shBig.src = blobUrl(photos[sheetId]);
+      shBig.alt = "Dein Foto von " + entryTitle(BY[sheetId]);
+      shBig.hidden = false;
+    } else {
+      shBig.hidden = true;
+    }
+  });
+
+  shAdd.addEventListener("click", function () {
+    if (!sheetId) return;
+    delArmed = false;
+    setNote("");
+    refreshSheetPhoto();
+    pickPhoto(sheetId);
+  });
+
+  shDel.addEventListener("click", function () {
+    if (!sheetId || !canPhoto() || !photos[sheetId]) return;
+    if (!delArmed) {
+      delArmed = true;
+      shDel.textContent = "Wirklich löschen?";
+      return;
+    }
+    delArmed = false;
+    var id = sheetId;
+    var old = photos[id];
+    delete photos[id];
+    saveLocal();
+    if (old) { forgetUrl(old); idbDel(old).catch(function () {}); }
+    render();
+    setNote("Foto gelöscht.");
+  });
+
+  shForm.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    if (!sheetId || !canWrite) return;
+    var pv = parseEuro(shValue.value);
+    if (!pv.ok) {
+      shErr.hidden = false;
+      shValue.focus();
+      return;
+    }
+    shErr.hidden = true;
+    var g = shGrader.value || null;
+    var next = cleanInfoOne({ g: g, gr: g ? shGrade.value : null, c: g ? null : (shCond.value || null), v: pv.v });
+    var id = sheetId;
+    var before = info[id] ? JSON.stringify(info[id]) : "";
+    var after = next ? JSON.stringify(next) : "";
+    var infoChanged = before !== after;
+    var ownChanged = shOwn.checked !== !!owned[id];
+    if (infoChanged) {
+      if (next) info[id] = next; else delete info[id];
+      saveLocal();
+      render();
+      queue("info", id, next);
+    }
+    if (ownChanged) setOwned(id, shOwn.checked);
+    closeSheet();
+    if (infoChanged || ownChanged) showToast("Gespeichert: " + entryTitle(BY[id]));
+  });
+
+  shRemove.addEventListener("click", function () {
+    if (!sheetId || !canWrite) return;
+    var id = sheetId;
+    closeSheet();
+    setHidden(id, true);
+    showToast("„" + entryTitle(BY[id]) + "“ entfernt", function () { setHidden(id, false); });
+  });
+
+  listEl.addEventListener("click", function (ev) {
+    var t = ev.target;
+    if (!t.closest) return;
+    var op = t.closest("[data-open]");
+    if (op) { openSheet(op.getAttribute("data-open")); return; }
+    var b = t.closest(".toggle");
+    if (b) toggle(b.getAttribute("data-id"));
+  });
+
+  removedToggle.addEventListener("click", function () {
+    removedOpen = !removedOpen;
+    renderRemoved();
+  });
+
+  removedList.addEventListener("click", function (ev) {
+    var b = ev.target.closest ? ev.target.closest("[data-restore]") : null;
+    if (!b) return;
+    setHidden(b.getAttribute("data-restore"), false);
+  });
+
+  segBtns.forEach(function (b) {
+    b.addEventListener("click", function () {
+      filter = b.getAttribute("data-f");
+      lsSet(LS_FILTER, filter);
+      render();
+    });
+  });
+
+  varsBox.addEventListener("change", function () {
+    showVars = varsBox.checked;
+    lsSet(LS_VARS, showVars ? "1" : "0");
+    render();
+  });
+
+  binderEl.addEventListener("click", function (ev) {
+    var s = ev.target.closest ? ev.target.closest("button.slot") : null;
+    if (!s) return;
+    var id = s.getAttribute("data-id");
+    var r = rowEls[id];
+    if (r.li.hidden) { filter = "all"; lsSet(LS_FILTER, filter); render(); }
+    r.li.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" });
+    r.li.classList.remove("flash");
+    void r.li.offsetWidth;
+    r.li.classList.add("flash");
+    setTimeout(function () { r.li.classList.remove("flash"); }, 1500);
+    try { r.b.focus({ preventScroll: true }); } catch (e) { /* older browsers */ }
+  });
+
+  // ---------- backup ----------
+  var bkSave = document.getElementById("bk-save");
+  var bkLoad = document.getElementById("bk-load");
+  var bkFile = document.getElementById("bk-file");
+  var loadArmed = false;
+  var loadTimer = null;
+
+  function blobToDataUrl(b) {
+    return new Promise(function (resolve, reject) {
+      var fr = new FileReader();
+      fr.onload = function () { resolve(fr.result); };
+      fr.onerror = function () { reject(fr.error); };
+      fr.readAsDataURL(b);
+    });
+  }
+  function dataUrlToBlob(u) {
+    var m = /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/.exec(u || "");
+    if (!m) return null;
+    var bin = atob(m[2]);
+    var arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    return new Blob([arr], { type: m[1] });
+  }
+
+  bkSave.addEventListener("click", function () {
+    bkSave.disabled = true;
+    bkSave.textContent = "Erstelle Sicherung …";
+    var ids = Object.keys(photos);
+    var outPhotos = {};
+    Promise.all(ids.map(function (id) {
+      return (idb ? idbGet(photos[id]) : Promise.resolve(null)).then(function (b) {
+        return b ? blobToDataUrl(b).then(function (u) { outPhotos[id] = u; }) : null;
+      }).catch(function () {});
+    })).then(function () {
+      var now = new Date();
+      var data = { app: "mimigma-sammlung", version: 1, saved: now.toISOString(), owned: owned, hidden: hidden, info: info, photos: outPhotos };
+      var blob = new Blob([JSON.stringify(data)], { type: "application/json" });
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "mimigma-sicherung-" + now.toISOString().slice(0, 10) + ".json";
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 4000);
+      lastBackup = now.toISOString();
+      lsSet(LS_BACKUP, lastBackup);
+      setSync();
+      showToast("Sicherung gespeichert, sie liegt bei deinen Downloads.");
+    }, function () {
+      showToast("Sicherung hat nicht geklappt. Versuche es noch einmal.");
+    }).then(function () {
+      bkSave.disabled = false;
+      bkSave.textContent = "Sicherung speichern";
+    });
+  });
+
+  function disarmLoad() {
+    loadArmed = false;
+    bkLoad.classList.remove("armed");
+    bkLoad.textContent = "Sicherung laden";
+  }
+  bkLoad.addEventListener("click", function () {
+    if (!loadArmed) {
+      loadArmed = true;
+      bkLoad.classList.add("armed");
+      bkLoad.textContent = "Nochmal tippen: ersetzt deinen jetzigen Stand";
+      clearTimeout(loadTimer);
+      loadTimer = setTimeout(disarmLoad, 5000);
+      return;
+    }
+    disarmLoad();
+    bkFile.value = "";
+    bkFile.click();
+  });
+
+  bkFile.addEventListener("change", function () {
+    var file = bkFile.files && bkFile.files[0];
+    if (!file) return;
+    file.text().then(function (txt) {
+      var d = JSON.parse(txt);
+      if (!d || d.app !== "mimigma-sammlung") throw new Error("kein Backup");
+      var nextPhotos = {};
+      var blobs = [];
+      Object.keys(d.photos || {}).forEach(function (id) {
+        if (!BY[id]) return;
+        var b = dataUrlToBlob(d.photos[id]);
+        if (b) { var k = newKey(); nextPhotos[id] = k; blobs.push([k, b]); }
+      });
+      var step = idb ? idbClear() : Promise.resolve();
+      return step.then(function () {
+        return Promise.all(blobs.map(function (kb) { return idb ? idbPut(kb[0], kb[1]) : null; }));
+      }).then(function () {
+        Object.keys(photoUrls).forEach(forgetUrl);
+        blobs.forEach(function (kb) { photoUrls[kb[0]] = URL.createObjectURL(kb[1]); });
+        owned = clean(d.owned);
+        hidden = clean(d.hidden);
+        info = cleanInfo(d.info);
+        photos = idb ? nextPhotos : {};
+        saveLocal();
+        render();
+        var n = count(owned);
+        showToast("Sicherung geladen: " + n + (n === 1 ? " Karte" : " Karten") + " abgehakt.");
+      });
+    }).catch(function () {
+      showToast("Diese Datei ist keine Sicherung der Mimigma-Sammlung.");
+    });
+  });
+
+  // ---------- start ----------
+  function start() {
+    mode = "local";
+    if (navigator.storage && navigator.storage.persist) {
+      navigator.storage.persist().catch(function () {});
+    }
+    idbOpen().then(function (db) {
+      idb = db;
+      return loadPhotos();
+    }, function () { idb = null; }).then(function () {
+      render();
+      setSync();
+    });
+    if ("serviceWorker" in navigator && location.protocol !== "file:") {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    }
+  }
+
+  render();
+  setSync();
+  start();
+})();
+</script>
+</body>
+</html>
