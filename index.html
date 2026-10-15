@@ -30,6 +30,8 @@
   --good: #2B8152;
   --warn: #AD4C25;
   --scrim: rgba(20, 17, 27, 0.72);
+  --lb-scrim: rgba(20, 17, 27, 0.94);
+  --lb-ink: #F9F8FC;
   --fh: 64px;
   --foil-base: linear-gradient(150deg, #F3E2AE 0%, #DDAA3E 55%, #B9851F 100%);
   --foil-holo: linear-gradient(135deg, #FFF7CF 0%, #F2C94C 32%, #FFF1A8 52%, #D19A1C 100%);
@@ -43,14 +45,14 @@
   :root:not([data-theme="light"]) {
     --bg: #14111B; --surface: #1E1A27; --sunk: #191622; --ink: #EDE9F5; --muted: #A39CB2; --line: #332D40;
     --gold: #E7BA45; --gold-soft: #2E2715; --gold-ink: #1C1505; --rose: #E87D9A; --rose-soft: #3B202B;
-    --good: #5BC78A; --warn: #EE8F68; --scrim: rgba(6, 5, 10, 0.8);
+    --good: #5BC78A; --warn: #EE8F68; --scrim: rgba(6, 5, 10, 0.8); --lb-scrim: rgba(6, 5, 10, 0.95); --lb-ink: #EDE9F5;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #14111B; --surface: #1E1A27; --sunk: #191622; --ink: #EDE9F5; --muted: #A39CB2; --line: #332D40;
   --gold: #E7BA45; --gold-soft: #2E2715; --gold-ink: #1C1505; --rose: #E87D9A; --rose-soft: #3B202B;
-  --good: #5BC78A; --warn: #EE8F68; --scrim: rgba(6, 5, 10, 0.8);
+  --good: #5BC78A; --warn: #EE8F68; --scrim: rgba(6, 5, 10, 0.8); --lb-scrim: rgba(6, 5, 10, 0.95); --lb-ink: #EDE9F5;
   color-scheme: dark;
 }
 
@@ -462,6 +464,55 @@ h1 {
 .sheet .btn.danger { color: var(--warn); }
 .sheet .btn:disabled { opacity: 0.5; cursor: default; }
 .sh-big { display: block; width: 100%; max-width: 100%; max-height: 70vh; object-fit: contain; border-radius: 8px; background: var(--sunk); }
+.slot.pic { cursor: zoom-in; }
+
+/* Photo viewer from the binder: the photo large; the card's label on top when it is not in a slab. */
+.lb {
+  position: fixed; inset: 0; z-index: 25;
+  display: flex; justify-content: center;
+  padding-top: calc(56px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  background: var(--lb-scrim);
+  cursor: zoom-out;
+}
+.lb-in {
+  width: 100%; max-width: 440px; height: 100%; min-height: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+}
+.lb-cap {
+  flex: none; width: 100%; min-width: 0;
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 10px 14px 12px;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--line); border-radius: 10px;
+  cursor: default;
+}
+.lb-name { margin: 0; font-size: 17px; font-weight: 700; line-height: 1.25; text-wrap: balance; }
+.lb-meta { margin: 0; font-size: 13.5px; line-height: 1.35; }
+.lb-meta .num { margin-left: 6px; white-space: nowrap; }
+.lb-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 4px; }
+.lb-tags:empty { display: none; }
+.lb-img {
+  display: block; flex: 0 1 auto; min-height: 0;
+  max-width: 100%; max-height: 100%; object-fit: contain;
+  border-radius: 10px;
+}
+.lb-x {
+  position: absolute;
+  top: calc(10px + env(safe-area-inset-top, 0px));
+  right: max(12px, env(safe-area-inset-right, 0px));
+  appearance: none; width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35); background: transparent; color: var(--lb-ink);
+  font: 600 20px/1 var(--f-body); cursor: pointer;
+}
+.lb-go {
+  appearance: none; flex: none; border: 0; background: transparent; color: var(--lb-ink);
+  font: 600 13.5px/1 var(--f-body); padding: 8px 10px; border-radius: 6px;
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.lb-x:focus-visible, .lb-go:focus-visible { outline: 2px solid var(--lb-ink); outline-offset: 2px; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
@@ -629,6 +680,19 @@ h1 {
       <button type="submit" class="btn primary" id="sh-save">Speichern</button>
     </div>
   </form>
+</div>
+
+<div class="lb" id="lb" hidden role="dialog" aria-modal="true" aria-labelledby="lb-name">
+  <button type="button" class="lb-x" id="lb-x" aria-label="Foto schließen">×</button>
+  <div class="lb-in">
+    <div class="lb-cap" id="lb-cap">
+      <p class="lb-name" id="lb-name"></p>
+      <p class="lb-meta" id="lb-meta"></p>
+      <div class="lb-tags" id="lb-tags"></div>
+    </div>
+    <img class="lb-img" id="lb-img" alt="">
+    <button type="button" class="lb-go" id="lb-go">In der Liste zeigen</button>
+  </div>
 </div>
 
 <script>
@@ -1163,7 +1227,7 @@ h1 {
           s.shown = pid;
           s.el.style.backgroundImage = pid ? 'url("' + blobUrl(pid) + '")' : "";
         }
-        s.el.setAttribute("aria-label", entryTitle(e) + ": " + (h ? "vorhanden" : "fehlt") + (pid ? ", mit Foto" : ""));
+        s.el.setAttribute("aria-label", entryTitle(e) + ": " + (h ? "vorhanden" : "fehlt") + (pid ? ", Foto groß anzeigen" : ", in der Liste zeigen"));
       }
     });
 
@@ -1636,10 +1700,93 @@ h1 {
     render();
   });
 
+  // ---------- photo viewer (binder) ----------
+  var lb = document.getElementById("lb");
+  var lbX = document.getElementById("lb-x");
+  var lbCap = document.getElementById("lb-cap");
+  var lbName = document.getElementById("lb-name");
+  var lbMeta = document.getElementById("lb-meta");
+  var lbTags = document.getElementById("lb-tags");
+  var lbImg = document.getElementById("lb-img");
+  var lbGo = document.getElementById("lb-go");
+  var lbId = null;
+  var lbReturn = null;
+
+  function openViewer(id) {
+    var e = BY[id];
+    var x = info[id] || null;
+    lbId = id;
+    lbReturn = document.activeElement;
+    lbImg.src = blobUrl(photoOf(id));
+    lbImg.alt = "Dein Foto von " + entryTitle(e);
+
+    lbName.textContent = e.isVar ? e.c.n + " · " + e.v.k : e.c.n;
+    lbMeta.textContent = "";
+    lbTags.textContent = "";
+    if (e.isVar) {
+      lbMeta.textContent = e.v.l + ". Variante von " + e.c.no;
+    } else {
+      var sn = el("span", "setname");
+      sn.textContent = e.c.s.replace(/^Black Star Promo · /, "");
+      var num = el("span", "num");
+      num.textContent = e.c.no;
+      lbMeta.appendChild(sn);
+      lbMeta.appendChild(num);
+      var rr = RAR[e.c.r] || ["", e.c.r, ""];
+      lbTags.appendChild(makeTag(rr[0], rr[1], rr[2]));
+      if (e.c.only) lbTags.appendChild(makeTag("", "Nur in Japan", "place", "jp"));
+    }
+    if (x && x.c) {
+      var c = el("span", "chip t-cond");
+      c.textContent = x.c;
+      c.title = CONDS[x.c];
+      lbTags.appendChild(c);
+    }
+    if (x && x.v !== null) {
+      var p = el("span", "price");
+      p.textContent = fmtEuro(x.v);
+      lbTags.appendChild(p);
+    }
+    // A graded card shows its label in the slab on the photo, so the text stays off.
+    lbCap.hidden = !!(x && x.g);
+
+    lb.hidden = false;
+    appEl.inert = true;
+    document.documentElement.style.overflow = "hidden";
+    lbX.focus();
+  }
+
+  function closeViewer(back) {
+    if (lb.hidden) return;
+    lb.hidden = true;
+    lbImg.removeAttribute("src");
+    lbId = null;
+    appEl.inert = false;
+    document.documentElement.style.overflow = "";
+    if (back && lbReturn && lbReturn.focus) { try { lbReturn.focus({ preventScroll: true }); } catch (e) { /* ignore */ } }
+  }
+
+  lbX.addEventListener("click", function () { closeViewer(true); });
+  lb.addEventListener("click", function (ev) {
+    if (ev.target.closest && ev.target.closest(".lb-cap, .lb-go, .lb-x")) return;
+    closeViewer(true);
+  });
+  lbGo.addEventListener("click", function () {
+    var id = lbId;
+    closeViewer(false);
+    if (id) showInList(id);
+  });
+  document.addEventListener("keydown", function (ev) { if (ev.key === "Escape" && !lb.hidden) closeViewer(true); });
+
   binderEl.addEventListener("click", function (ev) {
     var s = ev.target.closest ? ev.target.closest("button.slot") : null;
     if (!s) return;
     var id = s.getAttribute("data-id");
+    // With a photo the slot opens the photo large; without one it jumps to the card in the list.
+    if (photoOf(id)) openViewer(id); else showInList(id);
+  });
+
+  function showInList(id) {
     var r = rowEls[id];
     if (r.li.hidden) { filter = "all"; lsSet(LS_FILTER, filter); render(); }
     r.li.scrollIntoView({ block: "center", behavior: reduceMotion ? "auto" : "smooth" });
@@ -1648,7 +1795,7 @@ h1 {
     r.li.classList.add("flash");
     setTimeout(function () { r.li.classList.remove("flash"); }, 1500);
     try { r.b.focus({ preventScroll: true }); } catch (e) { /* older browsers */ }
-  });
+  }
 
   // ---------- backup ----------
   var bkSave = document.getElementById("bk-save");
